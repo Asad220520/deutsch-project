@@ -12,33 +12,46 @@ const db = admin.firestore();
 
 async function importLesson(jsonPath) {
   try {
-    // Полный путь к JSON
     const fullPath = path.resolve(jsonPath);
     if (!fs.existsSync(fullPath)) {
       console.error("Файл не найден:", fullPath);
       process.exit(1);
     }
 
-    // Читаем JSON с уроком
     const lessonData = JSON.parse(fs.readFileSync(fullPath, "utf-8"));
 
-    // Добавляем в коллекцию lessons
-    const docRef = await db.collection("lessons").add({
+    // Получаем /meta/lessons
+    const metaRef = db.collection("meta").doc("lessons");
+    const metaSnap = await metaRef.get();
+
+    let lastId = 0;
+    if (metaSnap.exists) {
+      lastId = metaSnap.data().lastId || 0;
+    }
+
+    const newId = lastId + 1;
+    const docRef = db.collection("lessons").doc(newId.toString());
+
+    await docRef.set({
       ...lessonData,
+      lessonNumber: newId,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log("Урок добавлен с ID:", docRef.id);
+    // Обновляем счётчик
+    await metaRef.set({ lastId: newId });
+
+    console.log("✅ Урок успешно добавлен с ID:", newId);
   } catch (error) {
-    console.error("Ошибка при добавлении урока:", error);
+    console.error("❌ Ошибка при добавлении урока:", error);
   }
 }
 
-// Получаем путь к JSON из аргументов (node importLesson.cjs путь_к_файлу.json)
+// Получаем путь к JSON из аргументов
 const jsonFilePath = process.argv[2];
 
 if (!jsonFilePath) {
-  console.error("Пожалуйста, укажите путь к JSON файлу урока, например:");
+  console.error("Укажите путь к JSON файлу урока, например:");
   console.error("node importLesson.cjs ./lesson1.json");
   process.exit(1);
 }

@@ -5,7 +5,6 @@ import Login from "../features/auth/LoginForm";
 import Register from "../features/auth/Register";
 import Profile from "../features/profile/pages/Profile";
 import LessonsPage from "../features/lessons/pages/LessonsPage";
-import LessonDetailPage from "../features/lessons/pages/LessonDetailPage";
 import NotFound from "../pages/NotFound";
 import Welcome from "../pages/Welcome"; // 👈 добавили
 import DictionaryPage from "../features/dictionary/pages/DictionaryPage";
@@ -22,6 +21,10 @@ import {
   AdminLessonsPage,
   AdminUsersPage,
 } from "../features/admin";
+import { LessonRulesPage } from "../features/lessons/pages/detail/LessonRulesPage";
+import { LessonPracticePage } from "../features/lessons/pages/detail/LessonPracticePage";
+import LessonDetailPage from "../features/lessons/pages/detail/LessonDetailPage";
+import { LessonWordsPage } from "../features/lessons/word/LessonWordsPage";
 
 
 export default function AppRouter() {
@@ -33,7 +36,12 @@ export default function AppRouter() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<Welcome />} /> {/* 👈 Показываем Welcome */}
         <Route path="/lessons" element={<LessonsPage />} />
-        <Route path="/lessons/:id" element={<LessonDetailPage />} />
+        <Route path="/lessons/:id" element={<LessonDetailPage />}>
+          <Route path="words" element={<LessonWordsPage />} />
+          <Route path="rules" element={<LessonRulesPage />} />
+          <Route path="practice" element={<LessonPracticePage />} />
+          {/* Можно добавить index route с общим описанием или редирект */}
+        </Route>
         <Route path="/profile" element={<Profile />} />
         <Route path="/dictionary" element={<DictionaryPage />} />
         <Route path="/settings" element={<SettingsPage />} />

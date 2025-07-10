@@ -1,6 +1,11 @@
 // src/firebase/config.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -14,12 +19,44 @@ const firebaseConfig = {
   measurementId: "G-LPYDDMLPMS",
 };
 
-// Инициализация
+// Инициализация приложения
 const app = initializeApp(firebaseConfig);
 
-// Используемые сервисы
+// Инициализация сервисов
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export { app, auth, db, storage };
+// Настройка persistence для аутентификации
+const initAuthPersistence = async () => {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+    // Альтернативно можно использовать browserSessionPersistence
+    // await setPersistence(auth, browserSessionPersistence);
+  } catch (error) {
+    console.error("Ошибка настройки persistence:", error);
+  }
+};
+
+// Инициализация persistence
+initAuthPersistence();
+
+// Настройки для Firestore (опционально)
+const firestoreSettings = {
+  experimentalForceLongPolling: true, // Для некоторых сред выполнения
+  merge: true, // Для безопасного обновления документов
+};
+
+// Экспорт сервисов
+export {
+  app,
+  auth,
+  db,
+  storage,
+  firebaseConfig, // Экспорт конфига может пригодиться
+};
+
+// Экспорт функций для ручной инициализации (если нужно)
+export const initializeFirebase = () => {
+  return { app, auth, db, storage };
+};
