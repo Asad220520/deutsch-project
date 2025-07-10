@@ -7,6 +7,5 @@ export default function App() {
   useEffect(() => {
     addTestUser();
   }, []);
-  return <div>Тестовый пользователь добавляется...</div>;
-
+  return <AppRouter />;
 }
