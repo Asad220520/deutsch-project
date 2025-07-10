@@ -40,9 +40,9 @@ export default function AppRouter() {
       {/* --- Пользовательские защищённые маршруты --- */}
       <Route
         element={
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <MainLayout />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         }
       >
         <Route path="/" element={<Home />} />
