@@ -1,4 +1,3 @@
-// src/features/auth/useAutoLogin.js
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
@@ -9,14 +8,21 @@ export default function useAutoLogin() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setLoading(true)); // ⬅️ Устанавливаем загрузку до начала
+    dispatch(setLoading(true));
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          const tokenResult = await user.getIdTokenResult(true); // ⬅️ true — обновляет токен (ВАЖНО)
+          const tokenResult = await user.getIdTokenResult(true); // ⬅️ true — обновляет токен
           const token = tokenResult.token;
           const role = tokenResult.claims.role || "user";
+
+          // ✅ Вставляем лог здесь
+          console.log(
+            role === "admin"
+              ? `🔥 Пользователь — АДМИН (${user.email})`
+              : `👤 Пользователь обычный (${user.email})`
+          );
 
           localStorage.setItem("token", token);
 
