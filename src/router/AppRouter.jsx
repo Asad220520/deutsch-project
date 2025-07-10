@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // --- Auth
 import useAutoLogin from "../features/auth/useAutoLogin";
 import Login from "../features/auth/LoginForm";
+import Register from "../features/auth/Register";
 
 // --- Public pages (user)
 import Home from "../pages/Home";
@@ -33,22 +34,17 @@ export default function AppRouter() {
   return (
     <Routes>
       {/* --- Гостевые маршруты --- */}
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<Login />} />
-      </Route>
 
-      {/* --- Пользовательские защищённые маршруты --- */}
-      <Route
-        element={
-          // <ProtectedRoute>
-            <MainLayout />
-          // </ProtectedRoute>
-        }
-      >
+      <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/lessons" element={<LessonsPage />} />
         <Route path="/lessons/:id" element={<LessonDetailPage />} />
         <Route path="/profile" element={<Profile />} />
+      </Route>
+      {/* --- авторизация маршруты --- */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
       {/* --- Админ маршруты вложенные --- */}
