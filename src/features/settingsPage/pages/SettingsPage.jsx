@@ -1,3 +1,5 @@
+import Home from "../../../pages/Home";
+
 export default function SettingsPage() {
   return (
     <div className="max-w-xl mx-auto mt-10 space-y-6">
@@ -23,6 +25,7 @@ export default function SettingsPage() {
       <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
         Удалить аккаунт
       </button>
+      <Home />
     </div>
   );
 }

@@ -1,5 +1,3 @@
-  // setAdminByEmail.js
-
 const admin = require("firebase-admin");
 
 // Убедись, что рядом лежит файл serviceAccountKey.json
@@ -22,7 +20,9 @@ const setAdminRoleByEmail = async (email) => {
   try {
     const user = await admin.auth().getUserByEmail(email);
     await admin.auth().setCustomUserClaims(user.uid, { role: "admin" });
-    console.log(`✅ Роль 'admin' назначена пользователю ${email} (uid: ${user.uid})`);
+    console.log(
+      `✅ Роль 'admin' назначена пользователю ${email} (uid: ${user.uid})`
+    );
   } catch (error) {
     console.error("❌ Ошибка при назначении роли:", error.message);
   }
