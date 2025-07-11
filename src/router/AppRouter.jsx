@@ -21,10 +21,10 @@ import {
   AdminLessonsPage,
   AdminUsersPage,
 } from "../features/admin";
-import { LessonRulesPage } from "../features/lessons/pages/detail/LessonRulesPage";
 import { LessonPracticePage } from "../features/lessons/pages/detail/LessonPracticePage";
 import LessonDetailPage from "../features/lessons/pages/detail/LessonDetailPage";
 import { LessonWordsPage } from "../features/lessons/word/LessonWordsPage";
+import { LessonRulesPage } from "../features/lessons/rules/LessonRulesPage";
 
 
 export default function AppRouter() {

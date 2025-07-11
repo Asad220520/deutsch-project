@@ -1,21 +1,36 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import WordAudioQuiz from "./WordAudioQuiz";
 import WordMatchingGame from "./WordMatchingGame";
-import { addWordToFirebase } from "../../dictionary/store/dictionaryThunks"; // Заменили addWords
+import { addWordToFirebase } from "../../dictionary/store/dictionaryThunks";
 import { v4 as uuidv4 } from "uuid";
+import { fetchLessonById } from "../../lessons/lessonsService"; // твой сервис
 
 export function LessonWordsPage() {
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const { lessons, loading } = useSelector((state) => state.lessons);
+
+  const [lesson, setLesson] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [levelIndex, setLevelIndex] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [addedToDict, setAddedToDict] = useState(false);
 
-  const lesson = lessons.find((l) => l.id === id);
+  useEffect(() => {
+    async function loadLesson() {
+      setLoading(true);
+      try {
+        const data = await fetchLessonById(id);
+        setLesson(data);
+      } catch (err) {
+        console.error("Ошибка загрузки урока", err);
+        setLesson(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLesson();
+  }, [id]);
 
   const { quizLevels, matchLevels } = useMemo(() => {
     if (!lesson) return { quizLevels: [], matchLevels: [] };
@@ -87,7 +102,7 @@ export function LessonWordsPage() {
     setAddedToDict(true);
   };
 
-  if (loading) return <div className="p-4 text-center">Загрузка...</div>;
+  if (loading) return <div className="p-4 text-center">Загрузка урока...</div>;
   if (!lesson)
     return <div className="p-4 text-center text-red-500">Урок не найден</div>;
   if (quizLevels.length === 0)
@@ -139,6 +154,7 @@ export function LessonWordsPage() {
     </div>
   );
 }
+
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
 }
